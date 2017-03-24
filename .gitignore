@@ -1,3 +1,12 @@
+# skip node crap
+*node_modules/
+
+# skip generated data
+*data/
+
+# skip csvs
+*.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
