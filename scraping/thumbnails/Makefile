@@ -13,3 +13,4 @@ $(fish): invasives.csv natives.csv
 install:
 	pip update selenium
 	brew update && brew install geckodriver
+	brew update && brew cask install firefox
