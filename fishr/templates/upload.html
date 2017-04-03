@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Fish Pic{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  $(document).on('change', ':file', function() {
+    $('#fish-pic-form').submit();
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <center><h4>Upload or Take a Photo Now</h4></center>
+  <p class="text-center">
+    We use a photo of your fish to classify the species,
+    <br>
+    and give you important information like if your catch
+    <br>
+    is an invasive species or legal to keep.
+  </p>
+</div>
+
+  <div class="container-fluid">
+    <div class="form-group">
+      <label class="btn btn-default">
+
+        <form id="fish-pic-form" enctype="multipart/form-data" method="post" name="fish-pic-form">
+          <input id="fish-pic-input" type="file" accept="image/*" name="fish-pic-input" style="display:none">
+          Upload or Take Photo
+          <input id="fish-pic-submit" type="submit" value="Upload" style="display:none">
+        </form>
+      </label>
+    </div>
+
+    <img class="img-responsive" src="{{ art_url }}" alt="Camera Icon">
+  </div>
+{% endblock %}

@@ -1,0 +1,1 @@
+"""fishr fish labeling application"""
