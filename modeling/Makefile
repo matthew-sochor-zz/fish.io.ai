@@ -1,15 +1,15 @@
 
 # define directories
 data = data
-test = $(data)/test
-train = $(data)/train
+test = $(data)/raw/test
+train = $(data)/raw/train
 dirs = $(data) $(test) $(train)
 
 scraped = ../scraping/thumbnails/scraped_images
 
 percent = 0.7
 
-fish = walleye carp
+fish = walleye carp white_perch yellow_perch
 
 split: $(fish)
 	echo split!

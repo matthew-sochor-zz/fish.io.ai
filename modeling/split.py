@@ -13,6 +13,7 @@ fish = os.listdir(source_path + '/' + fish_name)
 fish = [f for f in fish if f.find('.jpg') > -1]
 
 index = int(len(fish) * percent)
+np.random.seed(333)
 np.random.shuffle(fish)
 train, test = fish[:index], fish[index:]
 
