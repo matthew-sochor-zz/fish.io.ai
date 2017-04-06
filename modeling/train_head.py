@@ -12,7 +12,7 @@ batch_size = 8
 
 
 # TODO: replace this listdir with a mapping tbl/json
-CATS = os.listdir('data/raw/train')
+CATS = sorted(os.listdir('data/raw/train'))
 
 
 def cat_from_int(cat_int):
@@ -87,6 +87,6 @@ def train_model():
 
 
 if __name__ == '__main__':
-    # current code should get close to 98 percent acc
+    # current code should get close to 81 percent acc
     model = train_model()
     model.summary()
