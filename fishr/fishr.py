@@ -1,6 +1,7 @@
 import base64
 import os
 import random
+import subprocess
 
 import logging as log
 
@@ -22,6 +23,9 @@ app = Flask(__name__)
 
 # Initialize flask extensions
 bootstrap.init_app(app)
+
+
+log.basicConfig(level=log.DEBUG)
 
 
 # env vars for tmp purposes
@@ -80,8 +84,9 @@ def upload():
             return redirect(url_for('loading_splash',
                                     fish_pic_id=fish_pic_id))
 
+    # TODO: refactor this block
     # art for photo upload page
-    art_sel = 'CameraIconPIC.png'
+    art_sel = 'CameraIconSmall.png'
     art_url = url_for('static',
                       filename='{}/{}'.format('images',
                                               art_sel))
@@ -105,20 +110,61 @@ def fish_pic_results(fish_pic_id):
     # increment the counter to simulate model running
     counter += 1
 
+    # TODO: refactor to DB for PROD
+    dump_path = os.path.join('data',
+                             'fish_pics')
+    fish_pic_name = [fish_pic_name for fish_pic_name in os.listdir(dump_path)
+                     if (int(fish_pic_name.split('-')[0]) ==
+                         int(fish_pic_id))][0]
+    fish_pic_path = os.path.join(dump_path, fish_pic_name)
+
     if counter == 1:
+        subprocess.call(['python', 'fishr/score_fish_pic.py', fish_pic_path,
+                         '>>', 'score_fish_pic.log', '2&>1'])
+
+        # return null data until scoring job finishes
         FISH_PIC_DICT[fish_pic_id]['counter'] = counter
         FISH_PIC_DICT[fish_pic_id]['results'] = None
 
         log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
         return FISH_PIC_DICT[fish_pic_id]['results']
+    elif counter < 10:
+        score_path = os.path.join('data/scores', fish_pic_name)
+        print(score_path)
+        if os.path.exists(score_path):
+            log.debug('Scoring finished for: %s', score_path)
+            with open(score_path, 'r') as f:
+                species_pred = f.read().strip()
+            # TODO: move to DB
+            species_to_invasive = {'walleye': False,
+                                   'carp': True,
+                                   'white_perch': True,
+                                   'yellow_perch': False
+                                   }
+
+            results = {'invasive': species_to_invasive[species_pred],
+                       'species': species_pred,
+                       'length': 8}
+
+            return results
+
+        else:
+            log.debug('Waiting on model for: %s', score_path)
+            FISH_PIC_DICT[fish_pic_id]['counter'] = counter
+            FISH_PIC_DICT[fish_pic_id]['results'] = None
+
+            log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
+            return FISH_PIC_DICT[fish_pic_id]['results']
     else:
+        log.warn('Model scoring timed out')
+        # TODO: don't return a random model here as done now
         FISH_PIC_DICT[fish_pic_id]['counter'] = counter
 
         # TODO: this should return real model results
         if int(fish_pic_id) % 2 == 0:
-            results = {'invasive': True, 'length': 12}
+            results = {'invasive': True, 'length': 12, 'species': 'unknown'}
         else:
-            results = {'invasive': False, 'length': 8}
+            results = {'invasive': False, 'length': 8, 'species': 'unknown'}
         FISH_PIC_DICT[fish_pic_id]['results'] = results
 
         log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
@@ -146,20 +192,20 @@ def loading_splash(fish_pic_id):
                                 fish_pic_id=fish_pic_id))
 
 
-ART_IDX = {'keeper': ['GoodFish1PIC.png',
-                      'GoodFish2PIC.png',
-                      'GoodFish3PIC.png',
-                      'GoodFish4PIC.png'],
-           'release': ['ReleaseFish1PIC.png',
-                       'ReleaseFish2PIC.png',
-                       'ReleaseFish3PIC.png'],
-           'invasive': ['BadFish1PIC.png',
-                        'BadFish2PIC.png',
-                        'BadFish3PIC.png'],
-           'loading': ['Loading1PIC.png',
-                       'Loading2PIC.png',
-                       'Loading3PIC.png',
-                       'Loading4PIC.png']
+ART_IDX = {'keeper': ['GoodFish1Small.png',
+                      'GoodFish2Small.png',
+                      'GoodFish3Small.png',
+                      'GoodFish4Small.png'],
+           'release': ['ReleaseFish1Small.png',
+                       'ReleaseFish2Small.png',
+                       'ReleaseFish3Small.png'],
+           'invasive': ['BadFish1Small.png',
+                        'BadFish2Small.png',
+                        'BadFish3Small.png'],
+           'loading': ['Loading1Small.png',
+                       'Loading2Small.png',
+                       'Loading3Small.png',
+                       'Loading4Small.png']
            }
 
 
@@ -201,6 +247,8 @@ def submission_results(fish_pic_id):
         'release': 'Please Release this Fish'
     }
 
+    species_pred = results['species']
+
     # the heading is the bold message displayed to user
     results_heading = results_heading_dict[catch_type]
 
@@ -212,5 +260,6 @@ def submission_results(fish_pic_id):
 
     return render_template('submission_results.html',
                            results_heading=results_heading,
+                           species_pred=species_pred,
                            art_url=art_url,
                            fish_pic_base64=fish_pic_base64)
