@@ -12,7 +12,7 @@ aug_rounds = 4
 
 
 # TODO: replace this listdir with a mapping tbl/json
-CATS = os.listdir('data/raw/train')
+CATS = sorted(os.listdir('data/raw/train'))
 
 
 def cat_from_int(cat_int):
