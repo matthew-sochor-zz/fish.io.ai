@@ -1,6 +1,7 @@
 import base64
 import os
 import random
+import subprocess
 
 import logging as log
 
@@ -22,6 +23,9 @@ app = Flask(__name__)
 
 # Initialize flask extensions
 bootstrap.init_app(app)
+
+
+log.basicConfig(level=log.DEBUG)
 
 
 # env vars for tmp purposes
@@ -105,20 +109,61 @@ def fish_pic_results(fish_pic_id):
     # increment the counter to simulate model running
     counter += 1
 
+    # TODO: refactor to DB for PROD
+    dump_path = os.path.join('data',
+                             'fish_pics')
+    fish_pic_name = [fish_pic_name for fish_pic_name in os.listdir(dump_path)
+                     if (int(fish_pic_name.split('-')[0]) ==
+                         int(fish_pic_id))][0]
+    fish_pic_path = os.path.join(dump_path, fish_pic_name)
+
     if counter == 1:
+        subprocess.call(['python', 'fishr/score_fish_pic.py', fish_pic_path,
+                         '>>', 'score_fish_pic.log', '2&>1'])
+
+        # return null data until scoring job finishes
         FISH_PIC_DICT[fish_pic_id]['counter'] = counter
         FISH_PIC_DICT[fish_pic_id]['results'] = None
 
         log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
         return FISH_PIC_DICT[fish_pic_id]['results']
+    elif counter < 10:
+        score_path = os.path.join('data/scores', fish_pic_name)
+        print(score_path)
+        if os.path.exists(score_path):
+            log.debug('Scoring finished for: %s', score_path)
+            with open(score_path, 'r') as f:
+                species_pred = f.read().strip()
+            # TODO: move to DB
+            species_to_invasive = {'walleye': False,
+                                   'carp': True,
+                                   'white_perch': True,
+                                   'yellow_perch': False
+                                   }
+
+            results = {'invasive': species_to_invasive[species_pred],
+                       'species': species_pred,
+                       'length': 8}
+
+            return results
+
+        else:
+            log.debug('Waiting on model for: %s', score_path)
+            FISH_PIC_DICT[fish_pic_id]['counter'] = counter
+            FISH_PIC_DICT[fish_pic_id]['results'] = None
+
+            log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
+            return FISH_PIC_DICT[fish_pic_id]['results']
     else:
+        log.warn('Model scoring timed out')
+        # TODO: don't return a random model here as done now
         FISH_PIC_DICT[fish_pic_id]['counter'] = counter
 
         # TODO: this should return real model results
         if int(fish_pic_id) % 2 == 0:
-            results = {'invasive': True, 'length': 12}
+            results = {'invasive': True, 'length': 12, 'species': 'unknown'}
         else:
-            results = {'invasive': False, 'length': 8}
+            results = {'invasive': False, 'length': 8, 'species': 'unknown'}
         FISH_PIC_DICT[fish_pic_id]['results'] = results
 
         log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
@@ -201,6 +246,8 @@ def submission_results(fish_pic_id):
         'release': 'Please Release this Fish'
     }
 
+    species_pred = results['species']
+
     # the heading is the bold message displayed to user
     results_heading = results_heading_dict[catch_type]
 
@@ -212,5 +259,6 @@ def submission_results(fish_pic_id):
 
     return render_template('submission_results.html',
                            results_heading=results_heading,
+                           species_pred=species_pred,
                            art_url=art_url,
                            fish_pic_base64=fish_pic_base64)
