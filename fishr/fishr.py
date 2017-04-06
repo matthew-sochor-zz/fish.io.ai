@@ -84,8 +84,9 @@ def upload():
             return redirect(url_for('loading_splash',
                                     fish_pic_id=fish_pic_id))
 
+    # TODO: refactor this block
     # art for photo upload page
-    art_sel = 'CameraIconPIC.png'
+    art_sel = 'CameraIconSmall.png'
     art_url = url_for('static',
                       filename='{}/{}'.format('images',
                                               art_sel))
@@ -191,18 +192,20 @@ def loading_splash(fish_pic_id):
                                 fish_pic_id=fish_pic_id))
 
 
-ART_IDX = {'keeper': ['GoodFish1PIC.png',
-                      'GoodFish2PIC.png',
-                      'GoodFish3PIC.png',
-                      'GoodFish4PIC.png'],
-           'release': ['ReleaseFish1Small.png'],  # 'ReleaseFish2PIC.png', # 'ReleaseFish3PIC.png'],
-           'invasive': ['BadFish1PIC.png',
-                        'BadFish2PIC.png',
-                        'BadFish3PIC.png'],
-           'loading': ['Loading1PIC.png',
-                       'Loading2PIC.png',
-                       'Loading3PIC.png',
-                       'Loading4PIC.png']
+ART_IDX = {'keeper': ['GoodFish1Small.png',
+                      'GoodFish2Small.png',
+                      'GoodFish3Small.png',
+                      'GoodFish4Small.png'],
+           'release': ['ReleaseFish1Small.png',
+                       'ReleaseFish2Small.png',
+                       'ReleaseFish3Small.png'],
+           'invasive': ['BadFish1Small.png',
+                        'BadFish2Small.png',
+                        'BadFish3Small.png'],
+           'loading': ['Loading1Small.png',
+                       'Loading2Small.png',
+                       'Loading3Small.png',
+                       'Loading4Small.png']
            }
 
 
