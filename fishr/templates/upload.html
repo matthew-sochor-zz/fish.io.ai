@@ -24,19 +24,17 @@
 </div>
 
   <div class="container-fluid">
-    <div class="form-group">
+    
+    <div class="form-group" align="middle">
       <label class="btn btn-default">
-
         <form id="fish-pic-form" enctype="multipart/form-data" method="post" name="fish-pic-form">
-          <center>
-            <input id="fish-pic-input" type="file" accept="image/*" name="fish-pic-input" style="display:none">
-              Upload or Take Photo
-            <input id="fish-pic-submit" type="submit" value="Upload" style="display:none">
-          </center>
+          <input id="fish-pic-input" type="file" accept="image/*" name="fish-pic-input" style="display:none">
+            Upload or Take Photo
+          <input id="fish-pic-submit" type="submit" value="Upload" style="display:none">
         </form>
       </label>
     </div>
 
-    <center><img class="img-responsive" src="{{ art_url }}" alt="Camera Icon" align="middle"></center>
+    <center><img class="img-responsive" src="{{ art_url }}" alt="Camera Icon" align="middle"><center>
   </div>
 {% endblock %}
