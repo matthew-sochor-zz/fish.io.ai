@@ -20,5 +20,5 @@ sudo rm -f /etc/nginx/sites-enabled/fishr
 sudo ln -s /etc/nginx/sites-available/fishr /etc/nginx/sites-enabled/fishr
 sudo service nginx restart
 
-python fishr/score_fish_pic.py data/fish_pics > logs/scoring/fish_pics.py 2>&1 &
+python fishr/score_fish_pic.py data/fish_pics > logs/scoring/fish_pics.log 2>&1 &
 gunicorn fishr:app -b 127.0.0.1 --threads=2 > logs/fishr/fishr.log 2>&1 &
