@@ -1,8 +1,16 @@
+# skip random crap
+*.DS_Store
+*__MACOSX*
+*Untitled*
+
 # skip node crap
 *node_modules/
 
 # skip generated data
 *data/
+*.h5
+*.zip
+*images*
 
 # skip csvs
 *.csv
