@@ -9,11 +9,10 @@ from flask import Flask, redirect, render_template,\
 from flask_bootstrap import Bootstrap
 from werkzeug.utils import secure_filename
 
+from werkzeug import run_simple
 from OpenSSL import SSL
-# context = SSL.Context(SSL.SSLv23_METHOD)
-# context.use_privatekey_file('ssl.key')
-# context.use_certificate_file('ssl.crt')
-# log.basicConfig(level=log.DEBUG)
+from flask_googlemaps import Map
+from flask_googlemaps import GoogleMaps
 
 
 # Flask extensions
@@ -22,6 +21,11 @@ bootstrap = Bootstrap()
 
 app = Flask(__name__)
 
+# you can set key as config
+app.config['GOOGLEMAPS_KEY'] = "AIzaSyDrYUWGfmjRS2hw5GMLSwn6R88cUFEfJ84"
+
+# Initialize the extension
+GoogleMaps(app)
 
 # Initialize flask extensions
 bootstrap.init_app(app)
@@ -42,9 +46,6 @@ app.config.from_object(Config)
 # @app.route('/')
 # def index():
 #     return render_template('index.html')
-
-from flask_googlemaps import Map
-
 @app.route("/")
 def index():
     mymap = Map(
@@ -54,6 +55,7 @@ def index():
         markers=[(37.4419, -122.1419)]
     )
     return render_template('index.html', mymap=mymap)
+
 
 
 @app.route('/regulations')
@@ -230,23 +232,6 @@ def submission_results(fish_pic_id):
                            art_url=art_url,
                            fish_pic_base64=fish_pic_base64)
 
-
-# app.run(host='0.0.0.0',port=5000, 
-#         debug = True, ssl_context=context)
-
-
-
-# @app.route("/")
-# def mapview():
-#     mymap = Map(
-#         identifier="view-side",
-#         lat=37.4419,
-#         lng=-122.1419,
-#         markers=[(37.4419, -122.1419)]
-#     )
-#     return render_template('example.html', mymap=mymap)
-
-from werkzeug import run_simple
 
 run_simple('localhost', 5000, app,
            ssl_context='adhoc')
