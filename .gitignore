@@ -49,7 +49,7 @@ var/
 
 # Installer logs
 pip-log.txt
-vvvpip-delete-this-directory.txt
+pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
