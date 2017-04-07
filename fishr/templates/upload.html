@@ -24,18 +24,24 @@
 </div>
 
   <div class="container-fluid">
-    <div class="form-group">
+    
+    <div class="form-group" align="middle">
+      <br>
+      <br>
       <label class="btn btn-default">
-
         <form id="fish-pic-form" enctype="multipart/form-data" method="post" name="fish-pic-form">
           <input id="fish-pic-input" type="file" accept="image/*" name="fish-pic-input" style="display:none">
-          Upload or Take Photo
-          <br>
+            <span style="font-weight:bold;text-align:center"> 
+                Upload or Take Photo   
+            </span>
           <input id="fish-pic-submit" type="submit" value="Upload" style="display:none">
-          <img class="img-responsive" src="{{ url_for('static', filename='images/CameraIconSmall.png') }}" height="75" width="100" alt="Camera Icon">
         </form>
       </label>
+      <br>
+      <br>
+      <br>
     </div>
 
+    <center><img class="img-responsive" src="{{ art_url }}" alt="Camera Icon" align="middle"><center>
   </div>
 {% endblock %}
