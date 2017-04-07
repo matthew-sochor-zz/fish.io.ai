@@ -49,7 +49,7 @@ var/
 
 # Installer logs
 pip-log.txt
-pip-delete-this-directory.txt
+vvvpip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
@@ -152,3 +152,6 @@ flycheck_*.el
 
 # directory configuration
 .dir-locals.el
+
+# nginx
+logs/*
