@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Processing results{% endblock %}
+{% block title %}Fish Pic Results{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-  <h4>{{ results_heading }}</h4>
+  <h3>{{ results_heading }}</h3>
+  <h4>Our algorithm indicates you caught a: <b>{{ species_pred }}</b></h4>
   <img class="img-responsive" src="{{ art_url }}" alt="Fish Artwork">
 </div>
 
