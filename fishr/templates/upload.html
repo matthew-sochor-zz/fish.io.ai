@@ -32,8 +32,9 @@
         <form id="fish-pic-form" enctype="multipart/form-data" method="post" name="fish-pic-form">
           <input id="fish-pic-input" type="file" accept="image/*" name="fish-pic-input" style="display:none">
             <span style="font-weight:bold;text-align:center"> 
-                Upload or Take Photo   
+                Upload or Take Photo
             </span>
+            <center><img class="img-responsive" src="{{ art_url }}" alt="Camera Icon" align="middle" height="75" width="100"></center>
           <input id="fish-pic-submit" type="submit" value="Upload" style="display:none">
         </form>
       </label>
@@ -42,6 +43,5 @@
       <br>
     </div>
 
-    <center><img class="img-responsive" src="{{ art_url }}" alt="Camera Icon" align="middle"><center>
   </div>
 {% endblock %}
