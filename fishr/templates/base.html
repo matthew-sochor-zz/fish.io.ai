@@ -9,6 +9,8 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript" src="//cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
 <!-- <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script> -->
 {% endblock %}
 
