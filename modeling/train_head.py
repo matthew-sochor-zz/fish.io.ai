@@ -66,20 +66,31 @@ def train_model():
 
     x_in = Input(shape=input_dims)
     x = BatchNormalization()(x_in)
+    x = Dropout(0.5)(x)
+    x = Dense(256, activation='relu')(x)
+    x = BatchNormalization()(x)
     x = Dropout(0.2)(x)
     x = Dense(nbr_classes, activation='softmax')(x)
 
     model = Model(x_in, x)
 
-    model.compile(optimizer=Adam(lr=1e-3, decay=1e-3),
+    model.compile(optimizer=Adam(lr=1e-4, decay=1e-4),
                   loss='categorical_crossentropy',
                   metrics=['categorical_accuracy'])
 
     model.fit_generator(gen_trn,
                         steps_per_epoch=(nbr_trn_samples // batch_size),
-                        epochs=10, verbose=2, validation_data=gen_tst,
+                        epochs=5, verbose=2, validation_data=gen_tst,
                         validation_steps=(nbr_tst_samples // batch_size),
                         initial_epoch=0)
+
+    Y_test = []
+    Y_pred = []
+    for _, (x_test, y_test) in zip(range(nbr_tst_samples // batch_size), gen_tst):
+        Y_test.append(y_test)
+        Y_pred.append(model.predict_on_batch(x_test))
+
+    print('Model test:', np.mean(np.argmax(np.concatenate(Y_test), axis=1) == np.argmax(np.concatenate(Y_pred), axis=1)))
 
     model.save(os.path.join(model_dir, model_name))
 
