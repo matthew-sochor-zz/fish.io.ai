@@ -119,8 +119,8 @@ def fish_pic_results(fish_pic_id):
     fish_pic_path = os.path.join(dump_path, fish_pic_name)
 
     if counter == 1:
-        subprocess.call(['python', 'fishr/score_fish_pic.py', fish_pic_path,
-                         '>>', 'score_fish_pic.log', '2&>1'])
+        # subprocess.call(['python', 'fishr/score_fish_pic.py', fish_pic_path,
+        #                 '>>', 'score_fish_pic.log', '2&>1'])
 
         # return null data until scoring job finishes
         FISH_PIC_DICT[fish_pic_id]['counter'] = counter
