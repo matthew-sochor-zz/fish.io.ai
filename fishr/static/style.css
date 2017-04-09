@@ -1,3 +1,18 @@
+body { background-color: #3a4e70 }
+
+.icon {
+	max-height: 100px;
+	max-width: 200px;
+	background-color: white;
+	margin-top: 25px;
+}
+
+.big-icon {
+	max-height: 350px;
+	max-width: 350px;
+	background-color: white;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
@@ -13,6 +28,18 @@ tr:nth-child(even){background-color: #e1e3ef}
 th {
     background-color: #2347c6;
     color: white;
+}
+
+.thumbnail {
+    position: relative;
+}
+
+.caption {
+	font-weight: bold;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
 #bold { font-weight: bold }
