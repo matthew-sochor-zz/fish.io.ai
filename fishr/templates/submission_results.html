@@ -14,6 +14,9 @@
   <br>
   <img class="img-responsive" src="data:image;base64,{{ fish_pic_base64 }}" alt="User Submitted Fish Photo">
   <br>
+  <br>
+  <a href="{{ url_for('regulations') }}">Your location is tagged as: Lake Erie, OH. See fishing regulations.</a>
+  <br>
   <img class="img-responsive" src="{{ url_for('static', filename='images/map_image.png') }}" alt="Take a Photo">
 
 </div>
