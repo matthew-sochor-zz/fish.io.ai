@@ -8,7 +8,6 @@ if [[ "$2" == "--start" ]]; then
     mkdir -p data/dbs
 
     mkdir -p data/fish_pics
-    mkdir -p data/scores
 
     mkdir -p logs
     mkdir -p logs/fishr
@@ -20,7 +19,6 @@ if [[ "$2" == "--start" ]]; then
         source activate fishr
         # TODO: remove once scoring is non file based
         # rm -rf  data/fish_pics/*
-        rm -rf data/scores/*
 
         mkdir -p logs/nginx
 
