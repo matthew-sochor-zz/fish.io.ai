@@ -3,13 +3,14 @@
 {% block title %}fishr{% endblock %}
 
 {% block content %}
+<div class="container-fluid">
 <div class="row">
   <div class="span-12">
     <img class="img-responsive center-block" src="{{ url_for('static', filename='images/header.png') }}" alt="Beautiful Lake Erie"
   </div>
 </div>
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-xs-6">
     <div class="thumbnail text-center">
       <a href="{{ url_for('upload') }}">
         <img class="img-responsive icon" src="{{ url_for('static', filename='images/FishTakingPhotoSmall.png') }}" alt="Take a Photo">
@@ -21,15 +22,16 @@
 
   </div>
 
-  <div class="col-sm-6">
+  <div class="col-xs-6">
     <div class="thumbnail text-center">
       <a href="{{ url_for('regulations') }}">
         <img class="img-responsive icon" src="{{ url_for('static', filename='images/Guidelines2Small.png') }}" alt="Take a Photo">
         <div class="caption">
-            <p>View Fishing Regulations</p>
+            <p>Local Regulations</p>
         </div>
       </a>
     </div>
   </div>
+</div>
 </div>
 {% endblock %}
