@@ -12,7 +12,7 @@
 <div class="container-fluid">
   Uploaded Fish Preview:
   <br>
-  <img class="img-responsive" src="data:image;base64,{{ fish_pic_base64 }}" alt="User Submitted Fish Photo">
+  <img class="img-responsive" src="{{ url_for('cdn_fish_pic', fish_pic_id=fish_pic_id) }}" alt="User Submitted Fish Photo">
   <br>
   <br>
   <a href="{{ url_for('regulations') }}">Your location is tagged as: Lake Erie, OH. See fishing regulations.</a>

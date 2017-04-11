@@ -22,6 +22,8 @@ class FishPic:
 
     _last_rowid = 'SELECT last_insert_rowid() from fish_pic'
 
+    _random = 'SELECT * from fish_pic ORDER BY Random() LIMIT 1'
+
     def __init__(self, path):
         self.path = os.path.abspath(path)
         self._connection_cache = {}
@@ -47,6 +49,13 @@ class FishPic:
         value_json = json.dumps(value)
         with self._get_conn() as conn:
             conn.execute(self._replace, (value_json, key))
+
+    def random(self):
+        with self._get_conn() as conn:
+            key, value_json = conn.execute(self._random).fetchone()
+
+        value = json.loads(value_json)
+        return key, value
 
     def get(self, key):
         with self._get_conn() as conn:

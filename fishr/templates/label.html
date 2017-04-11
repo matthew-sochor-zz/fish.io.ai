@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Fish Pic Labeler{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  console.log($('#fish-label'));
+  $(document).on('change', '#fish-label', function() {
+    $.ajax({
+      type: "POST",
+      url: '/label',
+        success: function (data) {
+        console.log(data);
+        location.reload();
+      },
+      data: {'fish_pic_id': {{ fish_pic_id }},
+             'fish_label': $('#fish-label')[0].value}
+    });
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h4>Label the fish species:</h4>
+</div>
+
+<div class="container-fluid">
+
+  <select class="form-control" id="fish-label">
+    <option disabled selected value> -- select a fish species -- </option>
+    <option value="carp">Carp</option>
+    <option value="walleye">Walleye</option>
+    <option value="yellow_perch">Yellow Perch</option>
+    <option value="white_perch">White Perch</option>
+    <option value="other">Other</option>
+  </select>
+
+  <br>
+  <br>
+  <img class="img-responsive" src="{{ url_for('cdn_fish_pic', fish_pic_id=fish_pic_id) }}" alt="User Submitted Fish Photo">
+  <br>
+  Current prediction: <b>{{ species_pred }}</b>
+</div>
+{% endblock %}
