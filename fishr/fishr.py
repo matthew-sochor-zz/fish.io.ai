@@ -2,6 +2,8 @@ import base64
 import os
 import random
 import subprocess
+import sqlite3
+import uuid
 
 import logging as log
 
@@ -10,6 +12,8 @@ from flask import Flask, redirect, render_template,\
 from flask_bootstrap import Bootstrap
 from werkzeug.utils import secure_filename
 
+from .models import FishPic
+from .sqlite_queue import SqliteQueue
 
 log.basicConfig(level=log.DEBUG)
 
@@ -67,20 +71,31 @@ def upload():
             log.debug(os.listdir(dump_path))
             fish_pic_ext = (secure_filename(fish_pic_file.filename)
                             .split('.')[-1])
-            # TODO: refactor this to use DB with primary key
-            if len(os.listdir(dump_path)) > 0:
-                fish_pic_id = max(os.listdir(dump_path)).split('-')[0]
-                fish_pic_id = int(fish_pic_id) + 1
-            else:
-                fish_pic_id = 0
-            fish_pic_base = 'fish_pic'
-            fish_pic_name = '{:03d}-{}.{}'.format(fish_pic_id,
-                                                  fish_pic_base,
-                                                  fish_pic_ext)
+
+            # get a random uuid to use for filename
+            fish_pic_uuid = uuid.uuid4()
+
+            fish_pic_name = '{}.{}'.format(fish_pic_uuid,
+                                           fish_pic_ext)
+
             fish_pic_path = os.path.join(dump_path,
                                          fish_pic_name)
-            log.debug(fish_pic_path)
+            log.debug('Saving: %s', fish_pic_path)
             fish_pic_file.save(fish_pic_path)
+
+            img_path =  os.path.abspath(fish_pic_path)
+
+            # add submission to database
+            # TODO: make an ENV var
+            fish_pic_db = FishPic('data/dbs/fishr.db')
+            fish_pic_id = fish_pic_db.append({'img_path': img_path})
+
+            # push to scoring queue
+            # TODO: make queue path a global in ENV
+            log.debug('Push queue: %s', fish_pic_path)
+            fish_pic_queue = SqliteQueue('data/queues/fish_pic_queue.db')
+            fish_pic_queue.append((fish_pic_id, img_path))
+
             return redirect(url_for('loading_splash',
                                     fish_pic_id=fish_pic_id))
 
@@ -96,86 +111,51 @@ def upload():
                            art_url=art_url)
 
 
-# TODO: remove this global dict in favor of actual model
-FISH_PIC_DICT = {}
+def get_fish_pic_dict(fish_pic_id):
+    # function is used to "gin up" the real/fake result data
+    # return None if scoring is not finished
+    # else return the entire fish_pic_dict dump
 
+    # TODO: refactor to ENV global
+    fish_pic_db = FishPic('data/dbs/fishr.db')
+    fish_pic_dict = fish_pic_db.get(fish_pic_id)
+    log.debug('fish_pic_dict: %s', fish_pic_dict)
 
-def fish_pic_results(fish_pic_id):
-    try:
-        counter = FISH_PIC_DICT[fish_pic_id]['counter']
-    except KeyError:
-        FISH_PIC_DICT[fish_pic_id] = {}
-        counter = 0
+    species_pred = fish_pic_dict.get('species_pred')
 
-    # increment the counter to simulate model running
-    counter += 1
-
-    # TODO: refactor to DB for PROD
-    dump_path = os.path.join('data',
-                             'fish_pics')
-    fish_pic_name = [fish_pic_name for fish_pic_name in os.listdir(dump_path)
-                     if (int(fish_pic_name.split('-')[0]) ==
-                         int(fish_pic_id))][0]
-    fish_pic_path = os.path.join(dump_path, fish_pic_name)
-
-    if counter == 1:
-        # subprocess.call(['python', 'fishr/score_fish_pic.py', fish_pic_path,
-        #                 '>>', 'score_fish_pic.log', '2&>1'])
-
+    if not species_pred:
         # return null data until scoring job finishes
-        FISH_PIC_DICT[fish_pic_id]['counter'] = counter
-        FISH_PIC_DICT[fish_pic_id]['results'] = None
+        return None
 
-        log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
-        return FISH_PIC_DICT[fish_pic_id]['results']
-    elif counter < 10:
-        score_path = os.path.join('data/scores', fish_pic_name)
-        print(score_path)
-        if os.path.exists(score_path):
-            log.debug('Scoring finished for: %s', score_path)
-            with open(score_path, 'r') as f:
-                species_pred = f.read().strip()
-            # TODO: move to DB
-            species_to_invasive = {'walleye': False,
-                                   'carp': True,
-                                   'white_perch': True,
-                                   'yellow_perch': False
-                                   }
-
-            results = {'invasive': species_to_invasive[species_pred],
-                       'species': species_pred,
-                       'length': 8}
-
-            return results
-
-        else:
-            log.debug('Waiting on model for: %s', score_path)
-            FISH_PIC_DICT[fish_pic_id]['counter'] = counter
-            FISH_PIC_DICT[fish_pic_id]['results'] = None
-
-            log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
-            return FISH_PIC_DICT[fish_pic_id]['results']
     else:
-        log.warn('Model scoring timed out')
-        # TODO: don't return a random model here as done now
-        FISH_PIC_DICT[fish_pic_id]['counter'] = counter
+        log.debug('Scoring finished for: %s: %s',
+                  fish_pic_id,
+                  fish_pic_dict['img_path'])
 
-        # TODO: this should return real model results
-        if int(fish_pic_id) % 2 == 0:
-            results = {'invasive': True, 'length': 12, 'species': 'unknown'}
-        else:
-            results = {'invasive': False, 'length': 8, 'species': 'unknown'}
-        FISH_PIC_DICT[fish_pic_id]['results'] = results
+        species_to_invasive = {'walleye': False,
+                               'carp': True,
+                               'white_perch': True,
+                               'yellow_perch': False
+                               }
 
-        log.debug('fish_pic_dict: %s', FISH_PIC_DICT[fish_pic_id])
-        return FISH_PIC_DICT[fish_pic_id]['results']
+        results = {'invasive': species_to_invasive[species_pred],
+                   'species': species_pred,
+                   'length': 8}
+
+        fish_pic_dict['results'] = results
+
+        # TODO: refactor this to seperate function
+        # save the calcs from this function to DB
+        fish_pic_db.replace(fish_pic_id, fish_pic_dict)
+
+        return fish_pic_dict
 
 
-@app.route('/loading_splash/<string:fish_pic_id>')
+@app.route('/loading_splash/<int:fish_pic_id>')
 def loading_splash(fish_pic_id):
-    results = fish_pic_results(fish_pic_id)
+    fish_pic_dict = get_fish_pic_dict(fish_pic_id)
     # TODO: what if model results are never returned
-    if not results:
+    if not fish_pic_dict:
         # random loading art
         art_sel = random.choice(ART_IDX['loading'])
         art_url = url_for('static',
@@ -209,24 +189,18 @@ ART_IDX = {'keeper': ['GoodFish1Small.png',
            }
 
 
-@app.route('/submission_results/<string:fish_pic_id>')
+@app.route('/submission_results/<int:fish_pic_id>')
 def submission_results(fish_pic_id):
-    results = fish_pic_results(fish_pic_id)
+    fish_pic_dict = get_fish_pic_dict(fish_pic_id)
 
-    # TODO: more robust redirect strategy
-    if not results:
+    # redirect if user inputs non existant key
+    if not fish_pic_dict:
         return redirect(url_for('index'))
 
-    # TODO: refactor to DB for PROD
-    dump_path = os.path.join('data',
-                             'fish_pics')
-    fish_pic_name = [fish_pic_name for fish_pic_name in os.listdir(dump_path)
-                     if (int(fish_pic_name.split('-')[0]) ==
-                         int(fish_pic_id))][0]
+    results = fish_pic_dict['results']
+    img_path = fish_pic_dict['img_path']
 
-    fish_pic_path = os.path.join(dump_path, fish_pic_name)
-
-    with open(fish_pic_path, 'rb') as f:
+    with open(img_path, 'rb') as f:
         fish_pic_file = f.read()
 
     fish_pic_base64 = base64.b64encode(fish_pic_file).decode('utf-8')
