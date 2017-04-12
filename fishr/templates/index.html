@@ -33,6 +33,31 @@
     </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col-xs-6">
+    <div class="thumbnail text-center">
+      <a href="{{ url_for('label') }}">
+        <img class="img-responsive icon" src="{{ url_for('static', filename='images/carp.png') }}" alt="Take a Photo">
+        <div class="caption">
+            <p>Expert ID</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="col-xs-6">
+    <div class="thumbnail text-center">
+      <a href="{{ url_for('label') }}">
+        <img class="img-responsive icon" src="{{ url_for('static', filename='images/download.png') }}" alt="Take a Photo">
+        <div class="caption">
+            <p>Regulations</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
 </div>
 
 {{ super() }}
