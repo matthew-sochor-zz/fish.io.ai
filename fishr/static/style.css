@@ -1,3 +1,47 @@
+body { background-color: #3a4e70 }
+
+a:link {
+    font-style: italic;
+    color: white;
+}
+
+/* visited link */
+a:visited {
+    font-style: italic;
+    color: white;
+}
+
+/* mouse over link */
+a:hover {
+    font-style: italic;
+    color: grey;
+}
+
+/* selected link */
+a:active {
+    font-style: italic;
+    color: grey;
+}
+
+.icon {
+	max-height: 100px;
+	max-width: 200px;
+	background-color: white;
+	margin-top: 25px;
+}
+
+.med-icon {
+	max-height: 200px;
+	max-width: 200px;
+	background-color: white;
+}
+
+.big-icon {
+	max-height: 350px;
+	max-width: 350px;
+	background-color: white;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
@@ -8,11 +52,26 @@ th, td {
     padding: 8px;
 }
 
-tr:nth-child(even){background-color: #e1e3ef}
+tr:nth-child(even){background-color: #6a717c}
 
 th {
-    background-color: #2347c6;
+    background-color: #3d434c;
     color: white;
+}
+
+.thumbnail {
+    position: relative;
+    border: 2px solid;
+    border-radius: 25px;
+    margin: 15px
+}
+
+.caption {
+	font-weight: bold;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
 #bold { font-weight: bold }

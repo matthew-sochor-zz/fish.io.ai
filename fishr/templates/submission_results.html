@@ -3,21 +3,47 @@
 {% block title %}Fish Pic Results{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-  <h3>{{ results_heading }}</h3>
-  <h4>Our algorithm indicates you caught a: <b>{{ species_pred }}</b></h4>
-  <img class="img-responsive" src="{{ art_url }}" alt="Fish Artwork">
+<div class="container-fluid" style="color: white">
+  <div class="row">
+
+  	<h3>{{ results_heading }}</h3>
+  </div>
+  <div class="row">
+  	<h4>Our algorithm indicates you caught: </h4>
+  </div>
+  <div class="row">
+  	<div class="col-sm-6">
+	  <div class="row">
+	  		<center><h2><b>{{ species_pred }}</b></h2></center>
+	  </div>
+	  <div class="row">
+	  		<center>
+	  			<img class="img-responsive med-icon" src="{{ art_url }}" alt="Fish Artwork">
+	  		</center>
+	  </div>
+	</div>
+    <div class="col-sm-6">
+	  <div class="row">
+
+	  		<center>Uploaded Image:</center>
+	  </div>
+	  <div class="row">
+	  		<center>
+	  			<img class="img-responsive med-icon" src="{{ url_for('cdn_fish_pic', fish_pic_id=fish_pic_id) }}" alt="User Submitted Fish Photo">
+	  		</center>
+	  </div>
+	</div>
+  </div>
+
+  <div class="row">
+
+    <a href="{{ url_for('regulations') }}">Your location is tagged as: Lake Erie, OH. See fishing regulations.</a>
+  <div class="row">
+  	<img class="img-responsive" src="{{ url_for('static', filename='images/map_image.png') }}" alt="Take a Photo">
+  </div>
+  </div>
+
 </div>
 
-<div class="container-fluid">
-  Uploaded Fish Preview:
-  <br>
-  <img class="img-responsive" src="{{ url_for('cdn_fish_pic', fish_pic_id=fish_pic_id) }}" alt="User Submitted Fish Photo">
-  <br>
-  <br>
-  <a href="{{ url_for('regulations') }}">Your location is tagged as: Lake Erie, OH. See fishing regulations.</a>
-  <br>
-  <img class="img-responsive" src="{{ url_for('static', filename='images/map_image.png') }}" alt="Take a Photo">
-
-</div>
+{{ super() }}
 {% endblock %}

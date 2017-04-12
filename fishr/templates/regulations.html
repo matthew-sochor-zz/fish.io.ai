@@ -3,11 +3,11 @@
 {% block title %}Fishing Regulations{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid" style="color:white">
   <h2>Your location indicates: Ohio, Lake Erie</h2>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid" style="color:white">
   <!-- Regulations Source: view-source:http://wildlife.ohiodnr.gov/fishingregulations -->
   <!-- TODO: scrape this info in a scalable and maintainable way -->
 
@@ -126,4 +126,6 @@
 <div class="container-fluid"
   <img class="img-responsive" src="{{ url_for('static', filename='images/Guidelines2PIC.png') }}" alt="Fishing Regulations">
 </div>
+
+{{ super() }}
 {% endblock %}

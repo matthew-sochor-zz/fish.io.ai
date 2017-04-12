@@ -15,11 +15,23 @@
 {% endblock %}
 
 {% block navbar %}
-<div class="navbar navbar-default">
+<div class="navbar navbar-default" style="margin-bottom: 0px">
   <div class="container">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">Fish Classifier</a>
+      <a class="navbar-brand" href="/" style="font-style: normal;">Fish.io.ai - Make Erie Great Again</a>
     </div>
   </div>
 </div>
 {% endblock %}
+
+{% block content %}
+{% block footer %}
+<hr>
+<footer class="footer" style="color:white">
+Fish.io.ai is a totally open source project under the <a href="https://github.com/matthew-sochor/fish.io.ai/blob/master/LICENSE">MIT license</a>
+<br> Want to contribute?  <a href="https://github.com/matthew-sochor/fish.io.ai">Join us on github!</a>
+<br> Have some feedback?  <a href="mailto:matthew.sochor@gmail.com?Subject=Hey%20,I%20got%20a%20fish%20question">Send us an email!</a>
+</footer>
+{% endblock footer %}
+{% endblock %}
+
