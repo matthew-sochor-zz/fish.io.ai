@@ -229,7 +229,12 @@ def label():
     # get a fish_pic for them to label
     fish_pic_id, fish_pic_dict = fish_pic_db.random()
 
-    species_pred = fish_pic_dict['species_pred']
+    try:
+        species_pred = fish_pic_dict['species_pred']
+    except:
+        # TODO: refactor this in a more robust way to have unknown class
+        # if the image grab fails to grab an image with a pred
+        species_pred = 'unknown'
 
     return render_template('label.html',
                            fish_pic_id=fish_pic_id,

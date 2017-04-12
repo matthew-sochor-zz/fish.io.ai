@@ -46,10 +46,10 @@ def predict(fish_pic_id, img_path):
     y_pred = np.squeeze(model.predict_on_batch(X_fea), axis=0)
 
     log.info('-' * 30)
-    log.info('img_name:', img_name)
-    log.info('y_pred:', np.round(y_pred, 3))
-    log.info('sorted cat list:', CATS)
-    log.info('predicted class:', cat_from_int(np.argmax(y_pred)))
+    log.info('img_name: %s', img_name)
+    log.info('y_pred: %s', np.round(y_pred, 3))
+    log.info('sorted cat list: %s', CATS)
+    log.info('predicted class: %s', cat_from_int(np.argmax(y_pred)))
     log.info('-' * 30)
 
     # cache the model score to DB
@@ -60,6 +60,7 @@ def predict(fish_pic_id, img_path):
     fish_pic_dict['species_pred'] = species_pred
     fish_pic_db.replace(fish_pic_id, fish_pic_dict)
     log.debug('Commited update to db: %s', fish_pic_id)
+
 
 def model_serve_from_queue(queue_path):
     fish_pic_queue = SqliteQueue(queue_path)
