@@ -132,7 +132,8 @@ def get_fish_pic_dict(fish_pic_id):
 
     else:
 
-        confidence = round(max(fish_pic_dict.get('y_pred')),2)
+        confidence = round(max(fish_pic_dict.get('y_pred')), 2) * 100
+
         species_to_invasive = {'walleye': False,
                                'carp': True,
                                'white_perch': True,
@@ -281,16 +282,25 @@ def submission_results(fish_pic_id):
     results_heading = results_heading_dict[catch_type]
 
     art_sel = ART_IDX[species_pred]
+
+    # bonus art for action they should take
+    art_action = random.choice(ART_IDX[catch_type])
+
     log.debug('art_sel: %s', art_sel)
     art_url = url_for('static',
                       filename='{}/{}'.format('images',
                                               art_sel))
+
+    art_action_url = url_for('static',
+                             filename='{}/{}'.format('images',
+                                                     art_action))
 
     return render_template('submission_results.html',
                            results_heading=results_heading,
                            species_pred=species_pred,
                            confidence=confidence,
                            art_url=art_url,
+                           art_action_url=art_action_url,
                            fish_pic_id=fish_pic_id)
 
 @app.route('/download_cache')
