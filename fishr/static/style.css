@@ -57,6 +57,9 @@ th {
 
 .thumbnail {
     position: relative;
+    border: 2px solid;
+    border-radius: 25px;
+    margin: 15px
 }
 
 .caption {
