@@ -3,24 +3,47 @@ import subprocess
 
 import numpy as np
 
-from keras.layers import Dense, Dropout, Input, BatchNormalization
+from keras.applications.resnet50 import ResNet50
+from keras.layers import Dense, Dropout, Input, BatchNormalization, Conv2D, Activation, AveragePooling2D, GlobalAveragePooling2D
 from keras.models import Model
 from keras.optimizers import Adam
+from keras import layers
+from keras.callbacks import ModelCheckpoint
 
 
 batch_size = 8
+img_dim = 224
 
+model_dir = 'data/models'
+model_name = 'resnet50_conv_1.h5'
+model_weights = 'resnet50_conv_1-weights-improvement-05-0.87.hdf5'
+
+input_dims = (7, 7, 2048)
 
 # TODO: replace this listdir with a mapping tbl/json
 CATS = sorted(os.listdir('data/raw/train'))
+nbr_classes = len(CATS)
 
+def pop_layer(model, count=1):
+    if not model.outputs:
+        raise Exception('Sequential model cannot be popped: model is empty.')
+
+    popped = [model.layers.pop() for i in range(count)]
+
+    if not model.layers:
+        model.outputs = []
+        model.inbound_nodes = []
+        model.outbound_nodes = []
+    else:
+        model.layers[-1].outbound_nodes = []
+        model.outputs = [model.layers[-1].output]
+    model.built = False
+    return popped
 
 def cat_from_int(cat_int):
     return CATS[cat_int]
 
 
-input_dims = (2048,)
-nbr_classes = len(CATS)
 
 
 def gen_minibatches(arr_dir):
@@ -53,9 +76,6 @@ def gen_minibatches(arr_dir):
 
 
 def train_model():
-    model_name = 'resnet50_1layer.h5'
-
-    model_dir = 'data/models'
     subprocess.call(['mkdir', '-p', model_dir])
 
     nbr_trn_samples = len(os.listdir('data/emb/train'))
@@ -64,25 +84,55 @@ def train_model():
     gen_trn = gen_minibatches('data/emb/train')
     gen_tst = gen_minibatches('data/emb/test')
 
+    arr_input = Input(shape=(img_dim, img_dim, 3))
+    resnet_model = ResNet50(include_top=False, weights='imagenet',
+                     input_tensor=arr_input, pooling='avg')
+
+    popped = pop_layer(resnet_model, 12)
+
+    # Take last 12 layers from resnet 50 with their starting weights!
     x_in = Input(shape=input_dims)
-    x = BatchNormalization()(x_in)
-    x = Dropout(0.5)(x)
-    x = Dense(256, activation='relu')(x)
+
+    x = popped[11](x_in)
+    x = popped[10](x)
+    x = Activation('relu')(x)
+
+    x = popped[8](x)
+    x = popped[7](x)
+    x = Activation('relu')(x)
+
+    x = popped[5](x)
+    x = popped[4](x)
+
+    x = layers.add([x, x_in])
+    x = Activation('relu')(x)
+
+    x = AveragePooling2D((7, 7), name='avg_pool')(x)
+    x = GlobalAveragePooling2D()(x)
+
     x = BatchNormalization()(x)
     x = Dropout(0.2)(x)
     x = Dense(nbr_classes, activation='softmax')(x)
 
     model = Model(x_in, x)
+    if len(model_weights) > 0:
+        model.load_weights(model_dir + '/' + model_weights)
+    model.summary()
 
-    model.compile(optimizer=Adam(lr=1e-4, decay=1e-4),
+    model.compile(optimizer=Adam(lr=(1e-3)/16.0),
                   loss='categorical_crossentropy',
                   metrics=['categorical_accuracy'])
 
+    model.summary()
+    filepath="data/models/" + model_name.split('.')[0] + "-weights-improvement-{epoch:02d}-{val_categorical_accuracy:.2f}.hdf5"
+    checkpoint = ModelCheckpoint(filepath, monitor='val_categorical_accuracy', verbose=1, save_best_only=True, mode='max')
+    callbacks_list = [checkpoint]
     model.fit_generator(gen_trn,
                         steps_per_epoch=(nbr_trn_samples // batch_size),
-                        epochs=5, verbose=2, validation_data=gen_tst,
+                        epochs=10, verbose=2, validation_data=gen_tst,
                         validation_steps=(nbr_tst_samples // batch_size),
-                        initial_epoch=0)
+                        initial_epoch=0,
+                        callbacks = callbacks_list)
 
     Y_test = []
     Y_pred = []

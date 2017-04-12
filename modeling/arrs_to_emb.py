@@ -38,12 +38,30 @@ def gen_XY_from_dir(arr_dir, with_name=False):
             out = X, Y
         yield out
 
+def pop_layer(model, count=1):
+    if not model.outputs:
+        raise Exception('Sequential model cannot be popped: model is empty.')
+
+    popped = [model.layers.pop() for i in range(count)]
+
+    if not model.layers:
+        model.outputs = []
+        model.inbound_nodes = []
+        model.outbound_nodes = []
+    else:
+        model.layers[-1].outbound_nodes = []
+        model.outputs = [model.layers[-1].output]
+    model.built = False
+    return popped
 
 # define the model features to extract
 arr_input = Input(shape=(img_height, img_width, 3))
 model = ResNet50(include_top=False, weights='imagenet',
                  input_tensor=arr_input, pooling='avg')
 
+popped = pop_layer(model, 12)
+
+model.summary()
 
 def arrs_to_aug(arr_dir, emb_dir):
 
@@ -54,7 +72,7 @@ def arrs_to_aug(arr_dir, emb_dir):
         # TODO: refactor this to batch inputs via chunker
 
         X = preprocess_input(x[np.newaxis].astype(np.float32))
-        x_emb = np.squeeze(model.predict(X, batch_size=1), axis=0)
+        x_emb = np.squeeze(model.predict(X, batch_size=1))
         y_emb = y
 
         emb_name = arr_name.split('.')[0]
@@ -66,5 +84,5 @@ def arrs_to_aug(arr_dir, emb_dir):
 
 
 if __name__ == '__main__':
-    arrs_to_aug('data/aug/train', 'data/emb/train')
     arrs_to_aug('data/arr/test', 'data/emb/test')
+    arrs_to_aug('data/aug/train', 'data/emb/train')
