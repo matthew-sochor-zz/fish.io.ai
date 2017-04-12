@@ -81,9 +81,11 @@ def upload():
             fish_pic_path = os.path.join(dump_path,
                                          fish_pic_name)
             log.debug('Saving: %s', fish_pic_path)
+
+            # TODO: resize and convert to jpg on save
             fish_pic_file.save(fish_pic_path)
 
-            img_path =  os.path.abspath(fish_pic_path)
+            img_path = os.path.abspath(fish_pic_path)
 
             # add submission to database
             # TODO: make an ENV var
@@ -124,14 +126,11 @@ def get_fish_pic_dict(fish_pic_id):
     species_pred = fish_pic_dict.get('species_pred')
 
     if not species_pred:
+        # TODO: refactor this to get a true get dict fxn or rename
         # return null data until scoring job finishes
-        return None
+        return fish_pic_dict
 
     else:
-        log.debug('Scoring finished for: %s: %s',
-                  fish_pic_id,
-                  fish_pic_dict['img_path'])
-
         species_to_invasive = {'walleye': False,
                                'carp': True,
                                'white_perch': True,
@@ -147,6 +146,7 @@ def get_fish_pic_dict(fish_pic_id):
         # TODO: refactor this to seperate function
         # save the calcs from this function to DB
         fish_pic_db.replace(fish_pic_id, fish_pic_dict)
+        log.info('Commited to DB: %s', fish_pic_dict)
 
         return fish_pic_dict
 
@@ -155,7 +155,7 @@ def get_fish_pic_dict(fish_pic_id):
 def loading_splash(fish_pic_id):
     fish_pic_dict = get_fish_pic_dict(fish_pic_id)
     # TODO: what if model results are never returned
-    if not fish_pic_dict:
+    if not fish_pic_dict.get('species_pred'):
         # random loading art
         art_sel = random.choice(ART_IDX['loading'])
         art_url = url_for('static',
@@ -189,6 +189,53 @@ ART_IDX = {'keeper': ['GoodFish1Small.png',
            }
 
 
+@app.route('/cdn_fish_pic/<int:fish_pic_id>')
+def cdn_fish_pic(fish_pic_id):
+    fish_pic_dict = get_fish_pic_dict(fish_pic_id)
+    log.debug('fish_pic_dict: %s', fish_pic_dict)
+
+    img_path = fish_pic_dict['img_path']
+
+    with open(img_path, 'rb') as f:
+        fish_pic_file = f.read()
+
+    return fish_pic_file, 200, {'Content-Type': 'image/*'}
+
+
+@app.route('/label', methods=['GET', 'POST'])
+def label():
+    # TODO: refactor to ENV
+    fish_pic_db = FishPic('data/dbs/fishr.db')
+
+    if request.method == 'POST':
+        log.debug('label form: %s', request.form)
+
+        fish_pic_id = request.form.get('fish_pic_id', type=int)
+        fish_label = request.form.get('fish_label')
+
+        # TODO: update to a transactional vs no-sql setup
+        log.debug('fish_pic_id: %s', fish_pic_id)
+        fish_pic_dict = fish_pic_db.get(fish_pic_id)
+        try:
+            fish_pic_dict['fish_labels'].append(fish_label)
+        except KeyError:
+            fish_pic_dict['fish_labels'] = [fish_label]
+
+        fish_pic_db.replace(fish_pic_id, fish_pic_dict)
+        log.info('Commit to DB: %s', fish_pic_dict)
+
+        return '', 200
+
+    # get a fish_pic for them to label
+    fish_pic_id, fish_pic_dict = fish_pic_db.random()
+
+    species_pred = fish_pic_dict['species_pred']
+
+    return render_template('label.html',
+                           fish_pic_id=fish_pic_id,
+                           species_pred=species_pred)
+
+
 @app.route('/submission_results/<int:fish_pic_id>')
 def submission_results(fish_pic_id):
     fish_pic_dict = get_fish_pic_dict(fish_pic_id)
@@ -198,12 +245,6 @@ def submission_results(fish_pic_id):
         return redirect(url_for('index'))
 
     results = fish_pic_dict['results']
-    img_path = fish_pic_dict['img_path']
-
-    with open(img_path, 'rb') as f:
-        fish_pic_file = f.read()
-
-    fish_pic_base64 = base64.b64encode(fish_pic_file).decode('utf-8')
 
     # TODO: refactor this into lookup functions
     # based on state rules database(s).
@@ -236,4 +277,4 @@ def submission_results(fish_pic_id):
                            results_heading=results_heading,
                            species_pred=species_pred,
                            art_url=art_url,
-                           fish_pic_base64=fish_pic_base64)
+                           fish_pic_id=fish_pic_id)
