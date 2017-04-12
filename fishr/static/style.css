@@ -1,21 +1,25 @@
 body { background-color: #3a4e70 }
 
 a:link {
+    font-style: italic;
     color: white;
 }
 
 /* visited link */
 a:visited {
+    font-style: italic;
     color: white;
 }
 
 /* mouse over link */
 a:hover {
+    font-style: italic;
     color: grey;
 }
 
 /* selected link */
 a:active {
+    font-style: italic;
     color: grey;
 }
 

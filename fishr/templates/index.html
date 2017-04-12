@@ -27,11 +27,13 @@
       <a href="{{ url_for('regulations') }}">
         <img class="img-responsive icon" src="{{ url_for('static', filename='images/Guidelines2Small.png') }}" alt="Take a Photo">
         <div class="caption">
-            <p>Local Regulations</p>
+            <p>Regulations</p>
         </div>
       </a>
     </div>
   </div>
 </div>
 </div>
+
+{{ super() }}
 {% endblock %}
