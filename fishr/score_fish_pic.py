@@ -57,7 +57,11 @@ def predict(fish_pic_id, img_path):
     fish_pic_db = FishPic('data/dbs/fishr.db')
     fish_pic_dict = fish_pic_db.get(fish_pic_id)
     species_pred = cat_from_int(np.argmax(y_pred))
+
     fish_pic_dict['species_pred'] = species_pred
+    fish_pic_dict['y_pred'] = y_pred.tolist()
+    fish_pic_dict['y_labs'] = CATS
+
     fish_pic_db.replace(fish_pic_id, fish_pic_dict)
     log.debug('Commited update to db: %s', fish_pic_id)
 
