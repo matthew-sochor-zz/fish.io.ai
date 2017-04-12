@@ -283,3 +283,23 @@ def submission_results(fish_pic_id):
                            species_pred=species_pred,
                            art_url=art_url,
                            fish_pic_id=fish_pic_id)
+
+@app.route('/download_cache')
+def download_cache():
+    return render_template('download_cache.html')
+
+
+@app.route('/download_cache_all.csv')
+def download_cache_all_csv():
+    tmp_out = []
+    for fish_pic_id in range(1, 10000):
+        # TODO: refactor to env
+        try:
+            fish_pic_dict = FishPic('data/dbs/fishr.db').get(fish_pic_id)
+            tmp_out.append('{}, "{}"'.format(fish_pic_id, fish_pic_dict))
+        except:
+            break
+
+    out_csv = '\n'.join(tmp_out)
+
+    return out_csv, 200, {'Content-Type': 'text/csv'}
