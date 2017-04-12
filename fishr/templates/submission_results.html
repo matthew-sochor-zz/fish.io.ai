@@ -29,7 +29,7 @@
 	  </div>
 	  <div class="row">
 	  		<center>
-	  			<img class="img-responsive med-icon" src="data:image;base64,{{ fish_pic_base64 }}" alt="User Submitted Fish Photo">
+	  			<img class="img-responsive med-icon" src="{{ url_for('cdn_fish_pic', fish_pic_id=fish_pic_id) }}" alt="User Submitted Fish Photo">
 	  		</center>
 	  </div>
 	</div>
@@ -39,7 +39,7 @@
 
     <a href="{{ url_for('regulations') }}">Your location is tagged as: Lake Erie, OH. See fishing regulations.</a>
   <div class="row">
-  	<img class="img-responsive" src="{{ url_for('cdn_fish_pic', fish_pic_id=fish_pic_id) }}" alt="Take a Photo">
+  	<img class="img-responsive" src="{{ url_for('static', filename='images/map_image.png') }}" alt="Take a Photo">
   </div>
   </div>
 
