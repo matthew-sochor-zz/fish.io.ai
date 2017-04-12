@@ -131,6 +131,8 @@ def get_fish_pic_dict(fish_pic_id):
         return fish_pic_dict
 
     else:
+
+        confidence = round(max(fish_pic_dict.get('y_pred')),2)
         species_to_invasive = {'walleye': False,
                                'carp': True,
                                'white_perch': True,
@@ -139,7 +141,8 @@ def get_fish_pic_dict(fish_pic_id):
 
         results = {'invasive': species_to_invasive[species_pred],
                    'species': species_pred,
-                   'length': 8}
+                   'length': 8,
+                   'confidence': confidence}
 
         fish_pic_dict['results'] = results
 
@@ -185,7 +188,11 @@ ART_IDX = {'keeper': ['GoodFish1Small.png',
            'loading': ['Loading1Small.png',
                        'Loading2Small.png',
                        'Loading3Small.png',
-                       'Loading4Small.png']
+                       'Loading4Small.png'],
+           'walleye': 'walleye.png',
+           'carp': 'carp.jpeg',
+           'white_perch': 'white_perch.jpeg',
+           'yellow_perch': 'yellow_perch.jpeg'
            }
 
 
@@ -268,11 +275,12 @@ def submission_results(fish_pic_id):
     }
 
     species_pred = results['species']
+    confidence = results['confidence']
 
     # the heading is the bold message displayed to user
     results_heading = results_heading_dict[catch_type]
 
-    art_sel = random.choice(ART_IDX[catch_type])
+    art_sel = ART_IDX[species_pred]
     log.debug('art_sel: %s', art_sel)
     art_url = url_for('static',
                       filename='{}/{}'.format('images',
@@ -281,5 +289,6 @@ def submission_results(fish_pic_id):
     return render_template('submission_results.html',
                            results_heading=results_heading,
                            species_pred=species_pred,
+                           confidence=confidence,
                            art_url=art_url,
                            fish_pic_id=fish_pic_id)
