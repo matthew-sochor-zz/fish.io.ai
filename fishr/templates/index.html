@@ -6,14 +6,20 @@
 <div class="container-fluid">
 <div class="row">
   <div class="span-12">
-    <img class="img-responsive center-block" src="{{ url_for('static', filename='images/header.png') }}" alt="Beautiful Lake Erie"
+    <img class="img-responsive center-block" src="{{ url_for('static', filename='images/headerSmall.png') }}" alt="Beautiful Lake Erie"
   </div>
 </div>
+
+<div class="container-fluid">
+  <p style="color:white;text-align:center">Some features may still be under developement.</p>
+</div>
+
+
 <div class="row">
   <div class="col-xs-6">
     <div class="thumbnail text-center">
       <a href="{{ url_for('upload') }}">
-        <img class="img-responsive icon" src="{{ url_for('static', filename='images/FishTakingPhotoSmall.png') }}" alt="Take a Photo">
+        <img class="img-responsive icon" src="{{ url_for('static', filename='images/FishTakingPhotoSmall.png') }}" alt="ID your Fish from a Photo">
         <div class="caption">
             <p>ID your catch!</p>
         </div>
@@ -22,10 +28,11 @@
 
   </div>
 
+
   <div class="col-xs-6">
     <div class="thumbnail text-center">
       <a href="{{ url_for('regulations') }}">
-        <img class="img-responsive icon" src="{{ url_for('static', filename='images/Guidelines2Small.png') }}" alt="Take a Photo">
+        <img class="img-responsive icon" src="{{ url_for('static', filename='images/Guidelines2Small.png') }}" alt="Fishing Reguations">
         <div class="caption">
             <p>Regulations</p>
         </div>
@@ -34,11 +41,12 @@
   </div>
 </div>
 
+
 <div class="row">
   <div class="col-xs-6">
     <div class="thumbnail text-center">
       <a href="{{ url_for('label') }}">
-        <img class="img-responsive icon" src="{{ url_for('static', filename='images/carp.png') }}" alt="Take a Photo">
+        <img class="img-responsive icon" src="{{ url_for('static', filename='images/carp.png') }}" alt="Expert ID">
         <div class="caption">
             <p>Expert ID</p>
         </div>
@@ -46,6 +54,7 @@
     </div>
 
   </div>
+
 
   <div class="col-xs-6">
     <div class="thumbnail text-center">
@@ -57,6 +66,32 @@
       </a>
     </div>
   </div>
+
+
+  <div class="col-xs-6">
+    <div class="thumbnail text-center">
+      <a href="https://www.youtube.com/watch?v=XSroZJvoBbw">
+        <img class="img-responsive icon" src="{{ url_for('static', filename='images/YouTube-icon-dark.png') }}" alt="Video Tour" style="border-radius:25px">
+        <div class="caption">
+            <p>App Tour</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+
+  <div class="col-xs-6">
+    <div class="thumbnail text-center">
+      <a href="{{ url_for('about') }}">
+        <img class="img-responsive icon" src="{{ url_for('static', filename='images/press_icon.png') }}" alt="About Us">
+        <div class="caption">
+            <p>About Us</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+
 </div>
 </div>
 
