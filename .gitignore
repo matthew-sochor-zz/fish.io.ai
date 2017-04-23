@@ -12,6 +12,9 @@
 *.zip
 *images*
 
+# skip terraform state files
+*tfstate*
+
 # skip csvs
 *.csv
 
