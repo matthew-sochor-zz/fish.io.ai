@@ -8,6 +8,7 @@ if [[ "$2" == "--start" ]]; then
     mkdir -p data/dbs
 
     mkdir -p data/fish_pics
+    mkdir -p data/fish_pics_sm
 
     mkdir -p logs
     mkdir -p logs/fishr

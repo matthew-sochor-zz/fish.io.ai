@@ -12,6 +12,8 @@ from flask import Flask, redirect, render_template,\
 from flask_bootstrap import Bootstrap
 from werkzeug.utils import secure_filename
 
+from PIL import Image as pil_image
+
 from .models import FishPic
 from .sqlite_queue import SqliteQueue
 
@@ -77,10 +79,17 @@ def upload():
             # TODO: path should be updated before production
             dump_path = os.path.join('data',
                                      'fish_pics')
+            dump_path_sm = os.path.join('data',
+                                        'fish_pics_sm')
             log.debug('dump_path:')
             log.debug(os.listdir(dump_path))
-            fish_pic_ext = (secure_filename(fish_pic_file.filename)
-                            .split('.')[-1])
+            # fish_pic_ext = (secure_filename(fish_pic_file.filename)
+            #                 .split('.')[-1])
+            fish_pic_ext = 'jpg'
+
+            # reading into PIL
+            log.debug('Reading PIL: %s', fish_pic_file.filename)
+            img = pil_image.open(fish_pic_file)
 
             # get a random uuid to use for filename
             fish_pic_uuid = uuid.uuid4()
@@ -90,17 +99,33 @@ def upload():
 
             fish_pic_path = os.path.join(dump_path,
                                          fish_pic_name)
+
+            fish_pic_path_sm = os.path.join(dump_path_sm,
+                                            fish_pic_name)
+
             log.debug('Saving: %s', fish_pic_path)
 
             # TODO: resize and convert to jpg on save
-            fish_pic_file.save(fish_pic_path)
+            # fish_pic_file.save(fish_pic_path)
+            img.save(fish_pic_path)
+            # save thumbnail version
+            mc = 300
+            if img.size[0] > img.size[1]:
+                wh_tuple = (mc, img.size[1] * mc // img.size[0])
+            else:
+                wh_tuple = (img.size[0] * mc // img.size[1], mc)
+
+            img_sm = img.resize(wh_tuple)
+            img_sm.save(fish_pic_path_sm)
 
             img_path = os.path.abspath(fish_pic_path)
+            img_path_sm = os.path.abspath(fish_pic_path_sm)
 
             # add submission to database
             # TODO: make an ENV var
             fish_pic_db = FishPic('data/dbs/fishr.db')
-            fish_pic_id = fish_pic_db.append({'img_path': img_path})
+            fish_pic_id = fish_pic_db.append({'img_path': img_path,
+                                              'img_path_sm': img_path_sm})
 
             # push to scoring queue
             # TODO: make queue path a global in ENV
@@ -208,6 +233,7 @@ ART_IDX = {'keeper': ['GoodFish1Small.png',
 
 
 @app.route('/cdn_fish_pic/<int:fish_pic_id>')
+@app.route('/cdn_fish_pic/<int:fish_pic_id>.jpg')
 def cdn_fish_pic(fish_pic_id):
     fish_pic_dict = get_fish_pic_dict(fish_pic_id)
     log.debug('fish_pic_dict: %s', fish_pic_dict)
@@ -217,7 +243,21 @@ def cdn_fish_pic(fish_pic_id):
     with open(img_path, 'rb') as f:
         fish_pic_file = f.read()
 
-    return fish_pic_file, 200, {'Content-Type': 'image/*'}
+    return fish_pic_file, 200, {'Content-Type': 'image/jpg'}
+
+
+@app.route('/cdn_fish_pic_sm/<int:fish_pic_id>')
+@app.route('/cdn_fish_pic_sm/<int:fish_pic_id>.jpg')
+def cdn_fish_pic_sm(fish_pic_id):
+    fish_pic_dict = get_fish_pic_dict(fish_pic_id)
+    log.debug('fish_pic_dict: %s', fish_pic_dict)
+
+    img_path = fish_pic_dict['img_path_sm']
+
+    with open(img_path, 'rb') as f:
+        fish_pic_file = f.read()
+
+    return fish_pic_file, 200, {'Content-Type': 'image/jpg'}
 
 
 @app.route('/label', methods=['GET', 'POST'])
