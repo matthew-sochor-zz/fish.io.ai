@@ -1,16 +1,10 @@
 import os
 import subprocess
-
 import tqdm
-
 import numpy as np
-
 from keras.preprocessing.image import ImageDataGenerator
 
-
 aug_rounds = 4
-
-
 # TODO: replace this listdir with a mapping tbl/json
 CATS = sorted(os.listdir('data/raw/train'))
 
@@ -68,4 +62,3 @@ def arrs_to_aug(arr_dir, aug_dir):
 
 if __name__ == '__main__':
     arrs_to_aug('data/arr/train', 'data/aug/train')
-    arrs_to_aug('data/arr/test', 'data/aug/test')
