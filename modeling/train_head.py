@@ -10,13 +10,18 @@ from keras.optimizers import Adam
 from keras import layers
 from keras.callbacks import ModelCheckpoint
 
+from dotenv import load_dotenv, find_dotenv
 
-batch_size = 8
+load_dotenv(find_dotenv())
+
+batch_size = int(os.environ.get("BATCH_SIZE"))
+
 img_dim = 224
 
 model_dir = 'data/models'
-model_name = 'resnet50_conv_1.h5'
-model_weights = 'resnet50_conv_1-weights-improvement-05-0.87.hdf5'
+model_name = os.environ.get("MODEL_NAME")
+model_weights = os.environ.get("MODEL_WEIGHTS")
+num_epochs = int(os.environ.get("EPOCHS"))
 
 input_dims = (7, 7, 2048)
 
@@ -119,18 +124,23 @@ def train_model():
         model.load_weights(model_dir + '/' + model_weights)
     model.summary()
 
-    model.compile(optimizer=Adam(lr=(1e-3)/16.0),
+    model.compile(optimizer=Adam(lr=float(os.environ.get("LOSS_RATE"))),
                   loss='categorical_crossentropy',
                   metrics=['categorical_accuracy'])
 
     model.summary()
-    filepath="data/models/" + model_name.split('.')[0] + "-weights-improvement-{epoch:02d}-{val_categorical_accuracy:.2f}.hdf5"
+    filepath="data/models/" + model_name.split('.')[0] + "-weights-improvement-{epoch:02d}-{val_categorical_accuracy:.4f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_categorical_accuracy', verbose=1, save_best_only=True, mode='max')
     callbacks_list = [checkpoint]
+    steps_per_epoch = (nbr_trn_samples // batch_size)
+    validation_steps = (nbr_tst_samples // batch_size)
+
     model.fit_generator(gen_trn,
-                        steps_per_epoch=(nbr_trn_samples // batch_size),
-                        epochs=10, verbose=2, validation_data=gen_tst,
-                        validation_steps=(nbr_tst_samples // batch_size),
+                        steps_per_epoch=steps_per_epoch,
+                        epochs=num_epochs,
+                        verbose=2,
+                        validation_data=gen_tst,
+                        validation_steps=validation_steps,
                         initial_epoch=0,
                         callbacks = callbacks_list)
 

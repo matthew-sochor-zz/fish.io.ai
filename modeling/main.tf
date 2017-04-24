@@ -1,16 +1,18 @@
-# Configure the AWS Provider
 provider "aws" {
-	region     = "us-east-2"
+	region     = "${var.region}"
 }
 
-# Create a web server
 resource "aws_spot_instance_request" "gpu" {
-	ami = "ami-4c614629"  # Deep learning AMI on what-is-my-fish AWS account
-	instance_type = "p2.xlarge"
-	spot_price    = "0.20"
-	iam_instance_profile = "Modeler"
-	subnet_id = "subnet-6347d50a"
-	vpc_security_group_ids = ["sg-531f533a", "sg-a51d51cc", "sg-c11c50a8"] # currently prog network, Sochor and Josiah home IPs
+	ami = "${var.ami}"
+	instance_type = "${var.instance_type}"
+	spot_price    = "${var.spot_price}"
+	iam_instance_profile = "${var.profile}"
+	subnet_id = "${var.subnet}"
+	vpc_security_group_ids =  "${var.security_groups}"
+	root_block_device = {
+		volume_type = "${var.volume_type}"
+		volume_size = "${var.volume_size}"
+	}
 }
 
 output "ip" {

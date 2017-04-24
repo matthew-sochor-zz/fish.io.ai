@@ -3,28 +3,45 @@
 data = data
 test = $(data)/raw/test
 train = $(data)/raw/train
-dirs = $(data) $(test) $(train)
+scrapedDir = $(data)/scraped_images
+dirs = $(data) $(test) $(train) $(scrapedDir)
 
-scraped = ../scraping/thumbnails/scraped_images
+s3dir = what-is-my-fish-images
+s3key = scraped/
 
-percent = 0.7
+split_percent = 0.7
 
-fish = walleye carp white_perch yellow_perch
+fish = $(shell ls $(scrapedDir))
+
+# Modeling
+
+model: train_head.py
+	python train_head.py
+
+features: imgs_to_arr.py arrs_to_aug.py arrs_to_emb.py | $(dirs)
+	python imgs_to_arr.py
+	python arrs_to_aug.py
+	python arrs_to_emb.py
 
 split: $(fish)
 	echo split!
 
-clean:
-	rm -rf data
-
 $(fish): split.py | $(dirs)
 	mkdir -p $(test)/$@
 	mkdir -p $(train)/$@
-	python split.py $@ $(scraped) $(test) $(train) $(percent)
+	python split.py $@ $(scrapedDir) $(test) $(train) $(split_percent)
+
+# Data
+pullData: | $(dirs)
+	aws s3 sync s3://$(s3dir)/$(s3key) $(scrapedDir) --region=us-east-2
+
+clean:
+	rm -rf data
 
 $(dirs):
 	mkdir -p $@
 
+# Terraform deployment 
 start:
 	terraform apply
 
