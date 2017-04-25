@@ -13,6 +13,9 @@ trainS3key = trainfilter/
 
 # Modeling
 
+predict: predict.py
+	python predict.py
+
 model: train_head.py
 	python train_head.py
 
