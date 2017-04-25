@@ -4,8 +4,9 @@ data = data
 rawDir = $(data)/raw
 test = $(rawDir)/test
 train = $(rawDir)/train
+plotDir = $(data)/plots
 
-dirs = $(data) $(rawDir) $(test) $(train)
+dirs = $(data) $(rawDir) $(test) $(train) $(plotDir)
 
 s3dir = what-is-my-fish-images
 testS3key = testfilter/ 

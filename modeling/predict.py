@@ -3,7 +3,7 @@ import subprocess
 
 import numpy as np
 
-from keras.applications.resnet50 import ResNet50
+from keras.applications.resnet50 import ResNet50, preprocess_input
 from keras.layers import Dense, Dropout, Input, BatchNormalization, Conv2D, Activation, AveragePooling2D, GlobalAveragePooling2D
 from keras.models import Model
 from keras.optimizers import Adam
@@ -12,6 +12,9 @@ from keras.callbacks import ModelCheckpoint
 
 from dotenv import load_dotenv, find_dotenv
 from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
 load_dotenv(find_dotenv())
 
@@ -51,42 +54,29 @@ def cat_from_int(cat_int):
 
 
 
-
-def gen_minibatches(arr_dir):
-    # TODO: refactor this to be more performative HHD
-    # reading pattern if necessary
-
-    # reset seed for multiprocessing issues
-    np.random.seed()
-
+def gen_XY_from_dir(arr_dir, with_name=False):
     arr_files = sorted(os.listdir(arr_dir))
     arr_names = list(filter(lambda x: r'-img-' in x, arr_files))
     lab_names = list(filter(lambda x: r'-lab-' in x, arr_files))
-    print(lab_names)
-    xy_names = list(zip(arr_names, lab_names))
 
-    while True:
-        # in place shuffle
-        np.random.shuffle(xy_names)
-        xy_names_mb = xy_names[:batch_size]
+    assert len(arr_names) == len(lab_names), '# labels != images'
 
-        X = []
-        Y = []
-        for arr_name, lab_name in xy_names_mb:
-            x = np.load(os.path.join(arr_dir, arr_name))
-            y = np.load(os.path.join(arr_dir, lab_name))
-            X.append(x)
-            Y.append(y)
-
-        yield np.array(X), np.array(Y)
+    for arr_name, lab_name in zip(arr_names, lab_names):
+        X = np.load(os.path.join(arr_dir, arr_name))
+        Y = np.load(os.path.join(arr_dir, lab_name))
+        if with_name:
+            out = X, Y, arr_name, lab_name
+        else:
+            out = X, Y
+        yield out
 
 
 def predict_test():
     subprocess.call(['mkdir', '-p', model_dir])
 
-    nbr_tst_samples = len(os.listdir('data/emb/test'))
+    nbr_tst_samples = len(os.listdir('data/arr/test'))
 
-    gen_tst = gen_minibatches('data/emb/test')
+    gen_tst = gen_XY_from_dir('data/arr/test', with_name=True)
 
     arr_input = Input(shape=(img_dim, img_dim, 3))
     resnet_model = ResNet50(include_top=False, weights='imagenet',
@@ -120,22 +110,31 @@ def predict_test():
 
     model = Model(x_in, x)
     if len(model_weights) > 0:
+        print('loading: ',model_weights)
         model.load_weights(model_dir + '/' + model_weights)
-
-    model.compile(optimizer=Adam(lr=float(os.environ.get("LOSS_RATE"))),
-                  loss='categorical_crossentropy',
-                  metrics=['categorical_accuracy'])
 
     Y_test = []
     Y_pred = []
-    for _, (x_test, y_test) in zip(range(nbr_tst_samples // batch_size), gen_tst):
+    for (x_test, y_test, arr_name, lab_name) in gen_tst:
+        # TODO: refactor this to batch inputs via chunker
         Y_test.append(y_test)
-        Y_pred.append(model.predict_on_batch(x_test))
-    y_test = np.argmax(np.concatenate(Y_test), axis=1)
-    y_pred = np.argmax(np.concatenate(Y_pred), axis=1)
-    print('Model test:', np.mean(y_test == y_pred))
+        x_test_preproc = preprocess_input(x_test[np.newaxis].astype(np.float32))
+        x_features = resnet_model.predict(x_test_preproc, batch_size=1)
+        y_pred = model.predict(x_features, batch_size=1)
+        print(CATS[np.argmax(y_test)], CATS[np.argmax(y_pred)])
+        Y_pred.append(y_pred)
 
-    print(confusion_matrix(y_test, y_pred))
+    Y_test = np.argmax(Y_test, axis=1)
+    Y_pred = np.argmax(np.concatenate(Y_pred), axis=1)
+    print('Model test:', np.mean(Y_test == Y_pred))
+
+    cm = confusion_matrix(Y_test, Y_pred)
+    print(cm)
+    sns.heatmap(pd.DataFrame(cm, CATS, CATS), annot=True, fmt='g', cbar=False)
+    plt.yticks(rotation=0) 
+    plt.xticks(rotation=90) 
+    plt.gcf().subplots_adjust(bottom=0.30, left=0.20)
+    plt.savefig('data/plots/' + model_weights.split('.')[0] + '.png')
 
     return model
 

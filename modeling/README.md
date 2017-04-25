@@ -59,3 +59,7 @@ Pre-generate features to speed up computation:
 Train the model
 
 `make train`
+
+Predict your test set from weights.  Update weights of interest in .env and:
+
+`make predict`
