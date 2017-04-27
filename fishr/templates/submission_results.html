@@ -2,6 +2,85 @@
 
 {% block title %}Fish Pic Results{% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=APIKEYGOESHERE&callback=initMap"
+  type="text/javascript"></script>
+
+<script>
+    function handleNotifications(map, pos, msg) {
+
+        var infoWindow = new google.maps.InfoWindow({map: map});
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(msg);
+    }
+    function humanizeGeolocationErrorMsg(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                return "User denied the request for Geolocation.";
+            case error.POSITION_UNAVAILABLE:
+                return "Location information is unavailable.";
+            case error.TIMEOUT:
+                return "The request to get user location timed out.";
+            case error.UNKNOWN_ERROR:
+                return "An unknown error occurred."
+        }
+    }
+    function initMap() {
+
+        var geocoder = new google.maps.Geocoder;
+        var directionsService = new google.maps.DirectionsService;
+        var directionsRenderer = new google.maps.DirectionsRenderer({map: map});
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    var currentPos = {lat: position.coords.latitude, lng: position.coords.longitude};
+
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 15,
+                        center: currentPos,
+                        draggable: false,
+                        zoomControl: false,
+                        clickableIcons: false,
+                        disableDoubleClickZoom: true,
+                        panControl: false,
+                        rotateControl: false,
+                        scaleControl: false,
+                        scrollwheel: false
+                    });
+
+                    var marker = new google.maps.Marker({
+                        position: currentPos,
+                        map: map
+                    });
+                    geocoder.geocode({'location': currentPos}, function (results, status) {
+                        if (status !== google.maps.GeocoderStatus.OK) {
+                            alert(status);
+                        }
+                        // This is checking to see if the Geoeode Status is OK before proceeding
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            console.log(results);
+                            var address = (results[0].formatted_address);
+                            document.getElementById("address").innerHTML = address;
+                        }
+                    });
+
+                }, function(error) {
+                    handleNotifications(map, map.getCenter(), humanizeGeolocationErrorMsg(error));
+                }
+            )
+        } else {
+            var officePos = {lat: 50.438284, lng: 30.515339};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: officePos
+            });
+        }
+    }
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid" style="color: white">
   <div class="row">
@@ -9,7 +88,7 @@
   	<h3>{{ results_heading }}</h3>
   </div>
   <div class="row">
-  	<h4>Our algorithm indicates you caught: </h4>
+    <h4>Our algorithm indicates you caught: </h4>
   </div>
   <div class="row">
   	<div class="col-sm-6">
@@ -41,10 +120,10 @@
   </div>
 
   <div class="row">
-
-    <a href="{{ url_for('regulations') }}">Your location is tagged as: Lake Erie, OH. See fishing regulations.</a>
+    <a href="{{ url_for('regulations') }}">Your location is tagged as: <p id="address"> Unknown! </p> <br> See fishing regulations.</a>
   <div class="row">
-  	<img class="img-responsive" src="{{ url_for('static', filename='images/map_image.png') }}" alt="Take a Photo">
+
+    <div id="map" style="height:400px"></div>
   </div>
   </div>
 
