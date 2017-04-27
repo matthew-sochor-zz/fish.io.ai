@@ -19,7 +19,23 @@ img_width = 224
 img_height = 224
 
 # TODO: replace this listdir with a mapping tbl/json
-CATS = ['carp', 'walleye', 'white_perch', 'yellow_perch']
+CATS = ['black_bullhead',
+        'black_crappie',
+        'black_redhorse',
+        'bluegill',
+        'carp',
+        'channel_catfish',
+        'largemouth_bass',
+        'northern_pike',
+        'pumpkinseed_sunfish',
+        'rainbow_trout',
+        'smallmouth_bass',
+        'smallmouth_buffalo',
+        'walleye',
+        'white_bass',
+        'white_crappie',
+        'white_perch',
+        'yellow_perch']
 
 def cat_from_int(cat_int):
     return CATS[cat_int]
@@ -27,12 +43,30 @@ def cat_from_int(cat_int):
 # TODO: make this assumptions more robust
 # input_dims = (2048,)
 # nbr_classes = len(CATS)
+def pop_layer(model, count=1):
+    if not model.outputs:
+        raise Exception('Sequential model cannot be popped: model is empty.')
 
+    popped = [model.layers.pop() for i in range(count)]
+
+    if not model.layers:
+        model.outputs = []
+        model.inbound_nodes = []
+        model.outbound_nodes = []
+    else:
+        model.layers[-1].outbound_nodes = []
+        model.outputs = [model.layers[-1].output]
+    model.built = False
+    return popped
+
+# define the model features to extract
 res50 = ResNet50(include_top=False, weights='imagenet',
                  input_shape=(img_height, img_width, 3), pooling='avg')
 
+popped = pop_layer(res50, 12)
+
 # TODO: make this more scalable with TF serving
-model = load_model('data/models/resnet50_1layer_moreopts.h5')
+model = load_model('data/models/resnet-4-24-2017-fish-17-acc-89.hdf5')
 
 
 def predict(fish_pic_id, img_path):

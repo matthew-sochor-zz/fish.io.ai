@@ -178,11 +178,23 @@ def get_fish_pic_dict(fish_pic_id):
 
         confidence = round(max(fish_pic_dict.get('y_pred')), 2) * 100
 
-        species_to_invasive = {'walleye': False,
+        species_to_invasive = {'black_bullhead': False,
+                               'black_crappie': False,
+                               'black_redhorse': False,
+                               'bluegill': False,
                                'carp': True,
+                               'channel_catfish': False,
+                               'largemouth_bass': False,
+                               'northern_pike': False,
+                               'pumpkinseed_sunfish': False,
+                               'rainbow_trout': False,
+                               'smallmouth_bass': False,
+                               'smallmouth_buffalo': False,
+                               'walleye': False,
+                               'white_bass': False,
+                               'white_crappie': False,
                                'white_perch': True,
-                               'yellow_perch': False
-                               }
+                               'yellow_perch': False}
 
         results = {'invasive': species_to_invasive[species_pred],
                    'species': species_pred,
@@ -297,11 +309,23 @@ ART_IDX = {'keeper': ['GoodFish1Small.png',
                        'Loading2Small.png',
                        'Loading3Small.png',
                        'Loading4Small.png'],
-           'walleye': 'walleye.png',
+           'black_bullhead': 'black_bullhead.png',
+           'black_crappie': 'black_crappie.jpeg',
+           'black_redhorse': 'black_redhorse.jpeg',
+           'bluegill': 'bluegill.jpeg',
            'carp': 'carp.jpeg',
+           'channel_catfish': 'channel_catfish.jpeg',
+           'largemouth_bass': 'largemouth_bass.png',
+           'northern_pike': 'northern_pike.jpeg',
+           'pumpkinseed_sunfish': 'pumpkinseed_sunfish.jpeg',
+           'rainbow_trout': 'rainbow_trout.jpeg',
+           'smallmouth_bass': 'smallmouth_bass.png',
+           'smallmouth_buffalo': 'smallmouth_buffalo.jpeg',
+           'walleye': 'walleye.png',
+           'white_bass': 'white_bass.jpeg',
+           'white_crappie': 'white_crappie.jpeg',
            'white_perch': 'white_perch.jpeg',
-           'yellow_perch': 'yellow_perch.jpeg'
-           }
+           'yellow_perch': 'yellow_perch.jpeg'}
 
 
 @app.route('/cdn_fish_pic/<int:fish_pic_id>')
