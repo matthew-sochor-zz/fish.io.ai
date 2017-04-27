@@ -1,0 +1,83 @@
+species,state,county,location,zone,zone location,season,dates,limit,min_size,max_size,exception
+"blue_catfish, flathead_catfish",ohio,,,,,,,,,35,
+"blue_catfish, flathead_catfish",ohio,,,,,,,1,35,,
+channel_catfish,ohio,,,,,,,,,28,
+channel_catfish,ohio,,,,,,,6,,28,public lakes under 700 acres
+channel_catfish,ohio,,,,,,,1,28,,
+lake_sturgeon,ohio,,,,,,,,,,possession is prohibited. endangered species must be returned unharmed right away
+"largemouth_bass, smallmouth_bass, spotted_bass",ohio,,,,,,,5,12,,"5 combined largemouth, smallmouth and spotted"
+"largemouth_bass, smallmouth_bass, spotted_bass",ohio,,lake erie,,,June-April,June 23-April 30,5,14,,"5 combined largemouth, smallmouth and spotted. possession prohinited may 1-june 23"
+muskellunge,ohio,,,,,,,1,,,
+"striped_bass, hybrid-striped_bass, white_bass",ohio,,,,,,,30,,15,no more than 4 over 15 inches
+white_bass,ohio,,lake erie,,,,,,,,open all year round
+trout,ohio,,,,,,,5,,,combined
+"trout, salmon",ohio,,lake erie,,,,May 16 - Aug. 31,5,12,,"5 combined trout, salmon"
+"trout, salmon",ohio,,lake erie,,,,Sept 1 - May 15,2,12,,"2 combined trout, salmon"
+"trout, salmon",ohio,,"Cold Creek, Erie County",,,,,5,,,upstream of State Route 2
+"walleye, sauger, saugeye",ohio,,,,,,,6,,,"6 combined walleye, sauger and saugeye "
+"walleye, sauger, saugeye",ohio,,lake erie,,,,Jan 1 - Feb 28,6,15,,"6 combined walleye, sauger, and saugeye"
+"walleye, sauger, saugeye",ohio,,lake erie,,,,March 1 - April 30,4,15,,"4 combined walleye, sauger, and saugeye"
+"walleye, sauger, saugeye",ohio,,lake erie,,,,May 1 - Feb 28,,15,,to be announced
+yellow_perch,ohio,,,,,,,30,,,
+yellow_perch,ohio,,lake erie,"west, central, east",,,March 1 - April 30,30,,,
+yellow_perch,ohio,,lake erie,,,,May 1 - Feb. 28,,,,to be announced
+all_other_fish,ohio,,,,,,,,,,
+"largemouth_bass, smallmouth_bass",michigan,,,,,,3rd. Sat. in Jun. - Dec. 31,5,14,,catch and immediate release all year
+"largemouth_bass, smallmouth_bass",michigan,,,,,,Sat. before Memorial Day - Dec. 31,5,14,,catch and immediate release all year
+"largemouth_bass, smallmouth_bass",michigan,,"lake michigan within one-half mile of the following islands of the Beaver Island Archipelago: Beaver, Garden, High and Hog",,,,July 1 - Dec 31,5,14,,catch and immediate release all year
+northern_pike,michigan,,"upper pennisula great lakes and inland waters, and St. Marys R.",,,,may 15 - mar 15,2,24,,see exceptions
+northern_pike,michigan,,lower pennisula and inland waters,,,,Last Sat. in Apr. – Mar. 15,2,24,,see exceptions
+northern_pike,michigan,,"Lower Peninsula Great Lakes, Lake St. Clair, St. Clair River and Detroit River",,,,,2,24,,see exceptions
+flathead_catfish,michigan,,,,,,,5,15,,
+channel_catfish,michigan,,,,,,,10,12,,
+sunfish,michigan,,,,,,,25,,,"25 in any combination of species which include  black and white crappies, bluegill, green and hybrid sunfish, longear, pumpkinseed, redear, rock bass, and warmouth"
+lake_whitefish_cisco,michigan,,lake herring,,,,,12,,,12 in any combination
+white_bass,michigan,,"Great Lakes, Lake St. Clair, St. Marys River, St. Clair River, and Detroit River ",,,,,25,,,
+white_bass,michigan,,inland waters,,,,,10,,,
+smelt,michigan,,,,,,,2,,,gallons see netting exceptions
+muskellunge,michigan,,"upper pennisula great lakes and inland waters, and St. Marys R.",,,Apr. 1 - Mar. 31,may 15 - mar 15,1,42,,Only 1 per seasonal year. See exceptions. non-transferable Muskellunge Harvest Tag is required in order to harvest muskellunge (including tiger muskellunge)
+muskellunge,michigan,,Lower Peninsula inland waters ,,,Apr. 1 - Mar. 31,Last Sat. in Apr. – Mar. 15,1,42,,Only 1 per seasonal year. See exceptions. non-transferable Muskellunge Harvest Tag is required in order to harvest muskellunge (including tiger muskellunge)
+muskellunge,michigan,,lower peninsula great lakes,,,Apr. 1 - Mar. 31,,1,42,,Only 1 per seasonal year. See exceptions. non-transferable Muskellunge Harvest Tag is required in order to harvest muskellunge (including tiger muskellunge)
+muskellunge,michigan,,"Lake St Clair, St Clair River and Detroit River",,,Apr. 1 - Mar. 31,1st Sat. in Jun. – Dec. 15,1,42,,Only 1 per seasonal year. See exceptions. non-transferable Muskellunge Harvest Tag is required in order to harvest muskellunge (including tiger muskellunge)
+all_other_fish,michigan,,,,,,,,,,Those species not listed for MI and not considered trout or salmon or threatened and endangered species which are protected from harvest
+walleye ,michigan,,"upper pennisula great lakes and inland waters, and St. Marys R.",,,,may 15 - mar 15,6,15,,see exceptions
+walleye,michigan,,lower pennisula and inland waters,,,,Last Sat. in Apr. – Mar. 15,6,15,,see exceptions
+walleye,michigan,,"Lower Peninsula Great Lakes, Lake St. Clair, St. Clair River and Detroit River",,,,,6,15,,see exceptions
+yellow_perch,michigan,,,,,,,50,,,see exceptions
+lake_sturgeon,michigan,,"Great Lakes and connecting waters, and inland waters not listed",,,Jul 16 - Nov 30,,1,,,hook & line only. must release immediately. Only 1 per year.
+lake_sturgeon,michigan,,Lake St. Clair and St. Clair River,,,Jul. 16 – Nov. 30,Jul. 16 – Nov. 30,1,42,50,hook & line only. Only 1 per year. All sizes less than 42 and greater than 50 must immediately be released. 
+lake_sturgeon,michigan,ostego,Otsego Lake ,,,Jul. 16 – Nov. 30,Jul. 16 – Nov. 30,1,50,,hook & line only. Only 1 per year. Smaller must be released immediately.
+lake_sturgeon,michigan,,All MI-WI Boundary Waters,,,1st Sat. in Sep. – Sep. 30,1st Sat. in Sep. – Sep. 30,1,60,,hook & line only. Only 1 per year. Smaller must be released immediately. See boundary waters rules.
+lake_sturgeon,michigan,Cheboygan ,Blake Lake,,,1st Sat. in Feb,1st Sat. in Feb,1,,,"Season is open through the following Wed. or until the quota is reached  (whichever comes first). All harvested lake sturgeon must be reported immediately to DNR on site. Contact DNR Gaylord office (989) 732-3541 for details. Spearing allowed.
+"
+"trout, salmon",michigan,,"Lake Huron, Lake Erie, Lake Superior, Lake Michigan, Lake St. Clair, St. Marys River, Detroit River, St. Clair River",,,,,3,10,,"No more than 3 of the same species but 5 allowed combined species. Exception: Allowed 5 coho, chinook or pink salmon."
+pink_salmon,michigan,,St.Marys River,,,,last  Sat. in Apr. - Sep. 30.,10,10,,
+brook_salmon,michigan,,Lake Superior,,,,,1,20,,
+brook_salmon,michigan,,Isle Royale National Park waters,,,,,,,,Within 4.5 miles of Isle Royale catch and release only.
+"lake_trout, splake",michigan,,Lake Superior,MI 1-3,"Windigo, Ontonagon, Copper Harbor",,,3,15,34,only allowed 1 over the max of 34. 
+"lake_trout, splake",michigan,,lake superior,MI 4-8,"Big Bay, Marquette, Au Train, Munising, Grand Marais, Pendills Bay, Brimley State Park",,,5,15,34,only allowed 1 over the max of 34. 
+"lake_trout, splake",michigan,,lake huron,MH 1-6,"DeTour, Cedarville, St. Ignace, Mackinaw City, Cheboygan, Rogers City, Presque Isle, Rockport, Alpena, Black R, Harrisville, Tawas, Grindstone, Harbor Beach, Lexington",,Jan. 1 - Sep. 30,3,15,,
+"lake_trout, splake",michigan,,lake michigan,MM 1-3,"Menominee, Escanaba, Manistique, Harbor Springs, Charlevoix",,Jan. 1 - Sep. 30,3,15,27,
+"lake_trout, splake",michigan,,lake michigan,MM 4,"Elk Rapids, Traverse City, Northport",,Jan. 1 - Sep. 30,5,15,34,only one over the max of 34
+"lake_trout, splake",michigan,,lake michigan,MM 5,"Leland, Frankfort, Platte Bay",,Jan. 1 - Sep. 30,5,15,,
+"lake_trout, splake",michigan,,lake michigan,MM 6-8,"Arcadia, Manistee, Ludington, Grand Haven, Holland, New Buffalo",,Jan. 1 - Oct. 31,3,15,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+"muskellunge, tiger_muskellunge",pennsylvania,,,,,,,1,40,,Except those species in waters listed in the Brood Stock Lakes Program.
+pickerel,pennsylvania,,,,,,,4,18,,Except those species in waters listed in the Brood Stock Lakes Program.
+northern_pike,pennsylvania,,,,,,,2,24,,Except those species in waters listed in the Brood Stock Lakes Program.
+"walleye, saugeye, (hybrids)",pennsylvania,,,,,,Jan. 1 - March 14,6,15,,
+"walleye, saugeye, (hybrids)",pennsylvania,,,,,,May 6 - Dec 31,6,15,,
+sauger,pennsylvania,,,,,,Jan. 1 - March 14,6,12,,
+sauger,pennsylvania,,,,,,May 6 - Dec 31,6,12,,
+american_shad,pennsylvania,,,,,,,3,,,
+american_shad,pennsylvania,"Lehigh River, Schuylkill River and tributaries",,,,,,,,,"catch and release immediately.  Lehigh River upstream of the first dam in Easton, Pennsylvania and its tributaries and the Schuylkill River upstream of the I-95 Bridge and its tributaries. "
+"american_shad, river_herring",pennsylvania,Susquehanna River and tributaries,,,,,,,,,"Unlawful to take, catch or kill American Shad, in the Susquehanna River and all its tributaries. River Herring (Alewife and Blueback Herring) has a closed year-round season with zero daily limit applied to Susquehanna River and tributaries, Lehigh River and tributaries, Schuylkill River and tributaries, West Branch Delaware River, Delaware River, Delaware estuary, Delaware River tributaries upstream to the limit of the tidal influence, and Conowingo Reservoir."
+hickory_shad,pennsylvania,,,,,,,,,,closed year round

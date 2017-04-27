@@ -158,3 +158,6 @@ flycheck_*.el
 
 # nginx
 logs/*
+
+# notebooks
+*.ipynb

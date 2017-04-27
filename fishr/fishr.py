@@ -7,6 +7,8 @@ import uuid
 
 import logging as log
 
+import pandas as pd
+
 from flask import Flask, redirect, render_template,\
     request, url_for
 from flask_bootstrap import Bootstrap
@@ -395,6 +397,17 @@ def label():
                            species_pred=species_pred)
 
 
+def get_rules(state, species):
+    rules_df = pd.read_csv('fishr/tmp_fishing_rules.csv')
+    out = rules_df[rules_df['state'] == state]
+    species_mask = out['species'].str.contains(species)
+
+    if species_mask.sum() > 0:
+        out = out[species_mask]
+
+    return out
+
+
 @app.route('/submission_results/<int:fish_pic_id>')
 def submission_results(fish_pic_id):
     fish_pic_dict = get_fish_pic_dict(fish_pic_id)
@@ -441,12 +454,16 @@ def submission_results(fish_pic_id):
                              filename='{}/{}'.format('images',
                                                      art_action))
 
+    # get fishing regulation for this slice
+    rules_html = get_rules('ohio', species_pred).to_html(index=False)
+
     return render_template('submission_results.html',
                            results_heading=results_heading,
                            species_pred=species_pred,
                            confidence=confidence,
                            art_url=art_url,
                            art_action_url=art_action_url,
+                           rules_html=rules_html,
                            fish_pic_id=fish_pic_id)
 
 @app.route('/download_cache')
